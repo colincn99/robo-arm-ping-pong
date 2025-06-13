@@ -21,7 +21,6 @@
 #
 import rospy
 import numpy as np
-import matplotlib.pyplot as plt
 import random
 
 from gazebodemos.kinematics2 import Kinematics
@@ -459,8 +458,13 @@ if __name__ == "__main__":
     model_state = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
 
     # Get the gravity constant from gazebo
-    physics = rospy.ServiceProxy('/gazebo/get_physics_properties', GetPhysicsProperties)
-    grav = physics().gravity.z
+    while True:
+        try:
+            physics = rospy.ServiceProxy('/gazebo/get_physics_properties', GetPhysicsProperties)
+            grav = physics().gravity.z
+            break
+        except rospy.service.ServiceException:
+            rospy.sleep(1) # seconds
 
     # Targets
     r1_x = 0
